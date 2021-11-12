@@ -1,2 +1,1 @@
-# ae-github-actions
-Aeternity composite github actions
+# staging-deploy-composite-action
