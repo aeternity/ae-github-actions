@@ -7,9 +7,6 @@ inputs:
   env:
     description: "Environment"
     required: true
-  argocd-file:
-    description: "Argocd values file"
-    required: true
 runs:
   using: "composite"
   steps:
@@ -17,9 +14,9 @@ runs:
       run: |
         sudo snap install yq
         export URL_PREFIX=${{ inputs.url-prefix }}
-        yq eval -i 'del( .app.versions[] | select(. == env(URL_PREFIX))  )' superhero-ui/${{ inputs.argocd-file }}
-        yq eval -i 'del(... | select(.[] == "'${URL_PREFIX}.${{ inputs.env }}.aepps.com'"))' superhero-ui/${{ inputs.argocd-file }}
-        cat superhero-ui/${{ inputs.argocd-file }}
+        yq eval -i 'del( .app.versions[] | select(. == env(URL_PREFIX))  )' superhero-ui/values-${{ inputs.env }}.yaml
+        yq eval -i 'del(... | select(.[] == "'${URL_PREFIX}.${{ inputs.env }}.aepps.com'"))' superhero-ui/values-${{ inputs.env }}.yaml
+        cat superhero-ui/values-${{ inputs.env }}.yaml
         git config user.name github-actions
         git config user.email github-actions@github.com
         git add .
