@@ -29,4 +29,5 @@ runs:
         git config user.email github-actions@github.com
         git add .
         git commit -m "Deploy pr-${URL_PREFIX}.${{ inputs.app }}.${{ inputs.env }}.aepps.com"
+        git push
       shell: bash

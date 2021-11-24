@@ -1,7 +1,7 @@
 name: Staging Deploy
 description: "Staging Deploy"
 inputs:
-  url-prefix: 
+  url-prefix:
     description: "PR Number"
     required: true
   env:
@@ -24,4 +24,5 @@ runs:
         git config user.email github-actions@github.com
         git add .
         git commit -m "Uneploy pr-${URL_PREFIX}.${{ inputs.app }}.${{ inputs.env }}.aepps.com"
+        git push
       shell: bash
