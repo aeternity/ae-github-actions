@@ -20,9 +20,6 @@ runs:
         yq eval -i 'del( .app.versions[] | select(. == env(URL_PREFIX))  )' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         yq eval -i 'del(... | select(.[] == "'${URL_PREFIX}.${{ inputs.env }}.aepps.com'"))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-        git config --local user.email "$(git log --format='%ae' HEAD^!)"
-        git config --local user.name "$(git log --format='%an' HEAD^!)"
         git add .
         git commit -m "Uneploy pr-${URL_PREFIX}.${{ inputs.app }}.${{ inputs.env }}.aepps.com"
-        git push
       shell: bash

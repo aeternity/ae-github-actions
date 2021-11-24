@@ -25,9 +25,6 @@ runs:
             :
         fi
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-        git config --local user.email "$(git log --format='%ae' HEAD^!)"
-        git config --local user.name "$(git log --format='%an' HEAD^!)"
         git add .
         git commit -m "Deploy pr-${URL_PREFIX}.${{ inputs.app }}.${{ inputs.env }}.aepps.com"
-        git push
       shell: bash
