@@ -1,1 +1,1 @@
-# staging-deploy-composite-action
+# argocd-deploy-composite-action
