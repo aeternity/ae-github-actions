@@ -1,7 +1,7 @@
 name: Staging Deploy
 description: "Staging Deploy"
 inputs:
-  pr-number:
+  url-prefix: 
     description: "PR Number"
     required: true
   env:
