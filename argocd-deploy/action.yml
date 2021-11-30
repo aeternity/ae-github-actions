@@ -20,7 +20,7 @@ runs:
         export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
         yq eval -i '.app.versions += [env(VERSION)'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         if [ ${{ inputs.env }}  != "prd" ]; then 
-            yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}, "paths": {"  version": "'${URL_PREFIX}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             sed -i.bak "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             rm -rf ${{ inputs.app }}/values-${{ inputs.env }}.yaml.bak
             yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
