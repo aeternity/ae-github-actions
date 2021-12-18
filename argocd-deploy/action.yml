@@ -1,5 +1,5 @@
-name: Staging Deploy
-description: "Staging Deploy"
+name: Deploy
+description: "Argocd Deploy"
 inputs:
   url-prefix:
     description: "URL Prefix"
@@ -8,7 +8,7 @@ inputs:
     description: "Environment"
     required: true
   app:
-    description: "Deployed Application"
+    description: "Application"
     required: true
 runs:
   using: "composite"
