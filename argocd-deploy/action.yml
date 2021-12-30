@@ -10,20 +10,27 @@ inputs:
   app:
     description: "Application"
     required: true
+  git-sha:
+    description: "Git commit sha"
 runs:
   using: "composite"
   steps:
     - id: deploy
       run: |
         sudo snap install yq
+        export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
         export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
         if [ ${{ inputs.env }}  != "prd" ]; then
-            yq eval -i '.app.versions += [env(VERSION)'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-            yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-            sed -i.bak "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-            rm -rf ${{ inputs.app }}/values-${{ inputs.env }}.yaml.bak
-            yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            if [ -z ${{ inputs.git-sha }} ]; then
+            yq eval -i '.app.versions += {"version:" env(VERSION)'} ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            else
+            yq eval '.app.versions |= . + {"version:" env(VERSION)","  "gitSha:" env(GITSHA)}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            fi
+          yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+          sed -i.bak "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+          rm -rf ${{ inputs.app }}/values-${{ inputs.env }}.yaml.bak
+          yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml          
         else
           yq eval -i '.app.image.tag = env(VERSION)' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         fi

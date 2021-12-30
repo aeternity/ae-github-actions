@@ -17,8 +17,8 @@ runs:
       run: |
         sudo snap install yq
         export GITSHA=${{ inputs.git-sha }}
-        yq eval -i '.app.gitHash = env(GITSHA)' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-        yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+        yq eval 'del( .app.versions[] | select(.version == env(VERSION)) )' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+        yq eval '.app.versions |= . + ["{version:" env(VERSION)","  "gitSha:" env(GITSHA)"}"]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
