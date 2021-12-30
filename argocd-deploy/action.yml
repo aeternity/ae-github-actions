@@ -25,7 +25,7 @@ runs:
             if [ -z ${{ inputs.git-sha }} ]; then
             yq eval -i '.app.versions += {"version:" env(VERSION)'} ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             else
-            yq eval '.app.versions |= . + {"version:" env(VERSION)","  "gitSha:" env(GITSHA)}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            yq eval '.app.versions |= . + {"version:" env(VERSION)","  "gitSha:" env(GITSHA)}' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             fi
           yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           sed -i.bak "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
