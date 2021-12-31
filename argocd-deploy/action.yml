@@ -18,7 +18,7 @@ runs:
     - id: deploy
       run: |
         sudo snap install yq
-        export GITSHA="ddasdasd"
+        export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
         export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
         if [ ${{ inputs.env }}  != "prd" ]; then
