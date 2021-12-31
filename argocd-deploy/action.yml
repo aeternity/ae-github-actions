@@ -24,8 +24,6 @@ runs:
         if [ ${{ inputs.env }}  != "prd" ]; then
             if [ -z ${{ inputs.git-sha }} ]; then
             yq eval -i '.app.versions |= . + "{version: '${VERSION}'}"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-            
-            yq eval -i '.app.versions |= . + "{version: '${VERSION}', gitSha: '${GITSHA}'}"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             else
             yq eval -i '.app.versions |= . + "{version: '${VERSION}', gitSha: '${GITSHA}'}"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             fi
