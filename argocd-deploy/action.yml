@@ -18,14 +18,16 @@ runs:
     - id: deploy
       run: |
         sudo snap install yq
-        export GITSHA=${{ inputs.git-sha }}
+        export GITSHA="ddasdasd"
         export VERSION=${{ inputs.url-prefix }}
         export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
         if [ ${{ inputs.env }}  != "prd" ]; then
             if [ -z ${{ inputs.git-sha }} ]; then
-            yq eval -i '.app.versions |= . + {"version: '${VERSION}'"}' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            yq eval -i '.app.versions |= . + "{version: '${VERSION}'}"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            
+            yq eval -i '.app.versions |= . + "{version: '${VERSION}', gitSha: '${GITSHA}'}"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             else
-            yq eval -i '.app.versions |= . + {"version: '${VERSION}', gitSha: '${GITSHA}'"}' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            yq eval -i '.app.versions |= . + "{version: '${VERSION}', gitSha: '${GITSHA}'}"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             fi
           yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           sed -i.bak "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
