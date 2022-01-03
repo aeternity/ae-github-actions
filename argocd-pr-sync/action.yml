@@ -21,14 +21,14 @@ runs:
         sudo snap install yq
         export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
+        export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
         yq eval -i 'del( .app.versions[] | select(.version == env(VERSION)) )' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         sed -i.bak "s/[][]//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-        cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         yq eval -i '.app.versions |= . + ["{version: '${VERSION}', gitSha: '${GITSHA}'}"'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         sed -i.bak "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         git add .
-        git commit -m "Deploy ${HOST}.${{ inputs.env }}.aepps.com"
+        git commit -m "Deploy ${HOST}.${{ inputs.env }}.aepps.com - commit id : ${GITSHA}"
       shell: bash
