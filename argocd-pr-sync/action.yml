@@ -1,6 +1,9 @@
 name: PR Sync
 description: "Argocd PR Sync"
 inputs:
+  url-prefix:
+    description: "URL Prefix"
+    required: true
   git-sha:
     description: "Git short sha"
     required: true
