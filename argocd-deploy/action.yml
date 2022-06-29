@@ -32,7 +32,12 @@ runs:
           rm -rf ${{ inputs.app }}/values-${{ inputs.env }}.yaml.bak
           yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml          
         else
+          if ${VERSION} == "latest"; then
+          yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           yq eval -i '.app.image.tag = env(VERSION)' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+          else
+          yq eval -i '.app.image.tag = env(VERSION)' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+          fi
         fi
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
