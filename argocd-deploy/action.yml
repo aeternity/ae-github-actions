@@ -21,6 +21,7 @@ runs:
         if [ ${{ inputs.env }}  != "prd" ]; then
             yq eval -i '.app.versions += [env(VERSION)'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.aepps.com", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+            yq eval -i '.app.ingress.tls.[0].hosts += "'${HOST}'.${{ inputs.env }}.aepps.com"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             sed -i.bak "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             rm -rf ${{ inputs.app }}/values-${{ inputs.env }}.yaml.bak
             yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
