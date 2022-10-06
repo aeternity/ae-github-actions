@@ -20,6 +20,7 @@ runs:
         export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
         yq eval -i 'del( .app.versions[] | select(. == env(VERSION))  )' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         yq eval -i 'del(... | select(.[] == "'${HOST}.${{ inputs.env }}.aepps.com'"))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+        yq eval -i 'del( .app.ingress.tls.[0].hosts[] | select( . == "'${HOST}.${{ inputs.env }}.aepps.com'"))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         git config user.name github-actions
         git config user.email github-actions@github.com
