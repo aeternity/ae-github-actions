@@ -20,7 +20,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - id: deploy
+    - id: remove-docker
       run: |
         login_data() {
         cat <<EOF
