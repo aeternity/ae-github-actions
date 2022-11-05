@@ -26,7 +26,7 @@ runs:
         sed -i "s/[][]//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         yq eval -i '.app.versions |= . + ["{version: '${VERSION}', gitSha: '${GITSHA}'}"'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         sed -i "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-        yq eval -i '( . | .app.versions.[].version style="double”)' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+        yq eval -i '( . | .app.versions.[].version style="double")' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         yq eval -i '( . | .app.versions.[].gitSha style="double")' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
