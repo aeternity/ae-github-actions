@@ -1,0 +1,19 @@
+name: Deploy HTTP Status
+description: "Deploy HTTP Status"
+inputs:
+  url:
+    description: "Deployment URL"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - id: deploy-status
+      run: |
+        status_code=$(curl --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${{ inputs.url }})
+        if [[ "$status_code" -ne 200 ]] ; then
+          echo "The initial deployment for ${{ inputs.url }} is missing, please fix it and than try to sync with new commits!"
+          exit 1
+        else
+          echo "The initial PR deployment is OK.Proceed with the PR sync step."
+        fi
+      shell: bash
