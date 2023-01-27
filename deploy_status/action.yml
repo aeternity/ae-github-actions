@@ -1,0 +1,29 @@
+name: Deploy HTTP Status
+description: "Deploy HTTP Status"
+
+branding:
+  icon: server
+  color: green
+
+inputs:
+  url:
+    description: "Deployment URL"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - id: deploy-status
+      run: |
+        LRED="\033[1;31m"   # Light Red
+        LGREEN="\033[1;32m" # Light Green
+        NC='\033[0m'        # No Color
+
+        status_code=$(curl --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${{ inputs.url }})
+        if [[ "$status_code" -ne 200 ]] || [[ "$status_code" -ne 301 ]] ; then
+          echo -e "\n${LRED}The initial deployment for ${{ inputs.url }} is missing, please fix it and than try to sync with new commits!${NC}"
+          exit 1
+        else
+          echo -e "\n${LGREEN}The initial ${{ inputs.url }} deployment is OK.Proceed with the PR sync step!${NC}"
+          exit 0
+        fi
+      shell: bash
