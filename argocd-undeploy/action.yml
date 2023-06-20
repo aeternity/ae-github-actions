@@ -21,8 +21,8 @@ runs:
         yq eval -i 'del( .app.versions[] | select(.version == env(VERSION)) )' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         yq eval -i 'del( .app.ingress.hosts[] | select(.[] == "'${HOST}.${{ inputs.env }}.aepps.com'"))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-        git config user.name github-actions
-        git config user.email github-actions@github.com
+        git config user.name "github-actions"
+        git config user.email "aeternity-bot@users.noreply.github.com"
         git add .
         git commit -m "Uneploy ${VERSION}.${{ inputs.env }}.aepps.com"
       shell: bash
