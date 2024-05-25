@@ -12,7 +12,7 @@ inputs:
   timeout:
     description: "Timeout in seconds"
     required: false
-    default: "300"
+    default: "60"
   interval:
     description: "Interval between checks in seconds"
     required: false
