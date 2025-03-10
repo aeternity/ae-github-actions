@@ -36,6 +36,7 @@ runs:
         while [ $SECONDS -lt $END ]; do
           status_code=$(curl --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null "$URL")
           echo "HTTP Status Code: $status_code"
+          echo "status_code=$status_code" >> $GITHUB_ENV
           if [ "$status_code" -eq 200 ] || [ "$status_code" -eq 301 ]; then
             echo -e "\n${LGREEN}The $URL deployment is OK. Status: $status_code. Proceed with the PR sync step!${NC}"
             exit 0
