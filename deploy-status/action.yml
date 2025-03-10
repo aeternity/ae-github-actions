@@ -47,5 +47,5 @@ runs:
         done
 
         echo -e "\n${LRED}Timed out waiting for URL to be available. The deployment for $URL is missing, please fix it and then try to sync with new commits!${NC}"
-        exit 1
+        echo "DEPLOYMENT_STATUS=failure" >> $GITHUB_ENV
       shell: bash
