@@ -25,6 +25,7 @@ runs:
         export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
         export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
+        export DOMAIN=${{ inputs.domain }}
         if [ ${{ inputs.env }}  != "prd" ]; then
             if [ -z ${{ inputs.git-sha }} ]; then
             yq eval -i '.app.versions |= . + ["{version: '${VERSION}'}"'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
