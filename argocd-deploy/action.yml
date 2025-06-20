@@ -31,7 +31,7 @@ runs:
             else
             yq eval -i '.app.versions |= . + ["{version: '${VERSION}', gitSha: '${GITSHA}'}"'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             fi
-          yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.${DOMAIN}", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+          yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.'${DOMAIN}'", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           sed -i "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml          
         else
