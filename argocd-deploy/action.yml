@@ -24,7 +24,13 @@ runs:
         sudo snap install yq
         export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
-        export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
+
+        if [ "${{ env.APP }}" == "hexpulse" ]; then
+          export HOST=${{ inputs.url-prefix }}
+        else
+          export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
+        fi
+
         export DOMAIN=${{ inputs.domain }}
         if [ ${{ inputs.env }}  != "prd" ]; then
             if [ -z ${{ inputs.git-sha }} ]; then
