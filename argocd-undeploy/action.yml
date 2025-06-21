@@ -10,6 +10,10 @@ inputs:
   app:
     description: "Application"
     required: true
+  domain:
+    description: "Domain"
+    required: false
+    default: "${DOMAIN}"
 runs:
   using: "composite"
   steps:
@@ -17,12 +21,20 @@ runs:
       run: |
         sudo snap install yq
         export VERSION=${{ inputs.url-prefix }}
-        export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
+        
+        if [ "${{ env.APP }}" == "hexpulse" ]; then
+          export HOST=${{ inputs.url-prefix }}
+        else
+          export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
+        fi
+
+        export DOMAIN=${{ inputs.domain }}
+
         yq eval -i 'del( .app.versions[] | select(.version == env(VERSION)) )' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
-        yq eval -i 'del( .app.ingress.hosts[] | select(.[] == "'${HOST}.${{ inputs.env }}.service.aepps.com'"))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
+        yq eval -i 'del( .app.ingress.hosts[] | select(.[] == "'${HOST}.${{ inputs.env }}.${DOMAIN}'"))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         cat ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         git config user.name "github-actions"
         git config user.email "aeternity-bot@users.noreply.github.com"
         git add .
-        git commit -m "Uneploy ${VERSION}.${{ inputs.env }}.service.aepps.com"
+        git commit -m "Uneploy ${VERSION}.${{ inputs.env }}.${DOMAIN}"
       shell: bash

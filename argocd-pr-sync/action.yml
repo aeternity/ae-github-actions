@@ -25,7 +25,13 @@ runs:
         sudo snap install yq
         export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
-        export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
+        
+        if [ "${{ env.APP }}" == "hexpulse" ]; then
+          export HOST=${{ inputs.url-prefix }}
+        else
+          export HOST=${{ inputs.url-prefix }}-${{ env.APP }}
+        fi
+
         yq eval -i 'del( .app.versions[] | select(.version == env(VERSION)) )' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         sed -i "s/[][]//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
         yq eval -i '.app.versions |= . + ["{version: '${VERSION}', gitSha: '${GITSHA}'}"'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
