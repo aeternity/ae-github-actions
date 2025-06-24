@@ -49,5 +49,5 @@ runs:
         git config --local user.email "aeternity-bot@users.noreply.github.com"
         git config --local user.name "github-actions"
         git add .
-        git commit -m "Deploy ${HOST}.${{ inputs.env }}.${DOMAIN}"
+        git commit --allow-empty -m "Deploy ${HOST}.${{ inputs.env }}.${DOMAIN}"
       shell: bash
