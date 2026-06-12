@@ -14,14 +14,14 @@ inputs:
     description: "Git commit sha"
   domain:
     description: "Domain"
-    required: false
-    default: "service.aepps.com"
+    required: true
 runs:
   using: "composite"
   steps:
     - id: deploy
       run: |
-        sudo snap install yq
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        sudo chmod +x /usr/local/bin/yq
         export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
 
@@ -34,11 +34,13 @@ runs:
         export DOMAIN=${{ inputs.domain }}
         
         if [ ${{ inputs.env }}  != "prd" ]; then
+            yq eval -i 'del(.app.versions[] | select(.version == env(VERSION)))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             if [ -z ${{ inputs.git-sha }} ]; then
             yq eval -i '.app.versions |= . + ["{version: '${VERSION}'}"'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             else
             yq eval -i '.app.versions |= . + ["{version: '${VERSION}', gitSha: '${GITSHA}'}"'] ${{ inputs.app }}/values-${{ inputs.env }}.yaml
             fi
+          yq eval -i 'del(.app.ingress.hosts[] | select(.host == "'${HOST}.${{ inputs.env }}.${DOMAIN}'"))' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           yq eval -i '.app.ingress.hosts += [{"host": "'${HOST}'.${{ inputs.env }}.'${DOMAIN}'", "paths": {"- path": "/"}, "paths": {"  version": "'${VERSION}'"}}]' ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           sed -i "s/'//g" ${{ inputs.app }}/values-${{ inputs.env }}.yaml
           yq eval -i '.. style="double"' ${{ inputs.app }}/values-${{ inputs.env }}.yaml          

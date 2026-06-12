@@ -15,16 +15,17 @@ inputs:
     required: true
   domain:
     description: "Domain"
-    required: false
-    default: "service.aepps.com"
+    required: true
 runs:
   using: "composite"
   steps:
     - id: pr-sync
       run: |
-        sudo snap install yq
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        sudo chmod +x /usr/local/bin/yq
         export GITSHA=${{ inputs.git-sha }}
         export VERSION=${{ inputs.url-prefix }}
+        export DOMAIN=${{ inputs.domain }}
         
         if [ "${{ env.APP }}" == "hexpulse" ]; then
           export HOST=${{ inputs.url-prefix }}
