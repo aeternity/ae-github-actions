@@ -37,5 +37,11 @@ runs:
         git config user.name "github-actions"
         git config user.email "aeternity-bot@users.noreply.github.com"
         git add .
-        git commit -m "Undeploy ${VERSION}.${{ inputs.env }}.${DOMAIN}"
+        # A caller that races a still-in-flight deploy for the same version can
+        # land here before that entry exists, so there is nothing to delete and
+        # nothing to commit. That is not a failure of this action - treat it as
+        # a no-op rather than letting `git commit` exit non-zero and fail the
+        # step (which would also skip the caller's push, with no later event
+        # left to retry either the commit or the push).
+        git diff --cached --quiet && echo "Nothing to undeploy for ${VERSION}.${{ inputs.env }}.${DOMAIN}" || git commit -m "Undeploy ${VERSION}.${{ inputs.env }}.${DOMAIN}"
       shell: bash
